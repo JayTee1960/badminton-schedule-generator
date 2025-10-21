@@ -1,0 +1,1138 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Badminton Tournament Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 28px;
+        }
+        
+        .header p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #333;
+        }
+        
+        .form-section h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        input[type="text"]:focus, input[type="date"]:focus {
+            border-color: #333;
+            outline: none;
+        }
+        
+        .team-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .team-input {
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .team-input h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .player-input {
+            margin-bottom: 8px;
+        }
+        
+        .player-input input {
+            margin-bottom: 5px;
+        }
+        
+        .generate-btn {
+            background: #333;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .generate-btn:hover {
+            background: #555;
+        }
+        
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .court-inputs {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .court-inputs input {
+            flex: 1;
+        }
+        
+        .schedule-output {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn, .download-btn, .calculate-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .back-btn {
+            background: #666;
+            color: white;
+        }
+        
+        .back-btn:hover {
+            background: #888;
+        }
+        
+        .download-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .download-btn:hover {
+            background: #218838;
+        }
+        
+        .calculate-btn {
+            background: #007bff;
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background: #0056b3;
+        }
+        
+        .results-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e8;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+        
+        .results-section h3 {
+            margin: 0 0 15px 0;
+            color: #155724;
+        }
+        
+        .result-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 3px;
+            border-left: 3px solid #28a745;
+        }
+        
+        .tiebreaker-note {
+            font-size: 11px;
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+    </style>
+
+    <script>
+      
+      const files = {
+        
+      }
+    
+
+
+      window.fs = {}
+      window.fs.readFile = (fileName) => {
+        // return array buffer
+        return new Promise((resolve) => {
+          const content = files[fileName]
+          const decoded = atob(content)
+          const arr = new Uint8Array(decoded.length)
+          for (let i = 0; i < decoded.length; i++) {
+            arr[i] = decoded.charCodeAt(i)
+          }
+          resolve(arr)
+        })
+      }
+
+      // stub out window.user.get, window.db.get and window.db.set so that it works when you download the html doc
+      window.db = {}
+      window.db.get = (key) => {
+        // use localStorage to store the artifact
+        const value = localStorage.getItem(key)
+        if (value) {
+          return JSON.parse(value)
+        }
+
+        return null
+      }
+
+      window.db.set = (key, value) => {
+        // use localStorage to store the artifact
+        localStorage.setItem(key, JSON.stringify(value))
+      }
+
+      window.user = {}
+      window.user.get = () => {
+        return {
+          userId: "user-id-placeholder",
+          email: "placeholder@test.com"
+        }
+      }
+
+    </script>
+    </head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏸 Badminton Tournament Generator</h1>
+            <p>Create your custom tournament schedule with scoring</p>
+        </div>
+        
+        <div id="form-section">
+            <div class="form-section">
+                <h3>📅 Tournament Details</h3>
+                <div class="form-group">
+                    <label for="tournament-title">Tournament Title:</label>
+                    <input type="text" id="tournament-title" placeholder="e.g., 12-player badminton schedule (3v3)" value="🏸 12-player badminton schedule (3v3)">
+                </div>
+                <div class="form-group">
+                    <label for="tournament-date">Tournament Date:</label>
+                    <input type="date" id="tournament-date">
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3>🏟️ Court Information</h3>
+                <div class="form-group">
+                    <label>Court Numbers (2 courts needed):</label>
+                    <div class="court-inputs">
+                        <input type="text" id="court1" placeholder="Court 1" value="Court 1">
+                        <input type="text" id="court2" placeholder="Court 2" value="Court 2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3>👥 Team Information</h3>
+                <p>Enter team names and 3 players per team. The first player listed will be considered the captain.</p>
+                
+                <div class="team-section">
+                    <div class="team-input">
+                        <h4>Team 1</h4>
+                        <div class="form-group">
+                            <label>Team Name:</label>
+                            <input type="text" id="team1-name" placeholder="Team 1 Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Captain (Player 1):</label>
+                            <input type="text" id="team1-player1" placeholder="Captain Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Player 2:</label>
+                            <input type="text" id="team1-player2" placeholder="Player 2 Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Player 3:</label>
+                            <input type="text" id="team1-player3" placeholder="Player 3 Name">
+                        </div>
+                    </div>
+                    
+                    <div class="team-input">
+                        <h4>Team 2</h4>
+                        <div class="form-group">
+                            <label>Team Name:</label>
+                            <input type="text" id="team2-name" placeholder="Team 2 Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Captain (Player 1):</label>
+                            <input type="text" id="team2-player1" placeholder="Captain Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Player 2:</label>
+                            <input type="text" id="team2-player2" placeholder="Player 2 Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Player 3:</label>
+                            <input type="text" id="team2-player3" placeholder="Player 3 Name">
+                        </div>
+                    </div>
+                    
+                    <div class="team-input">
+                        <h4>Team 3</h4>
+                        <div class="form-group">
+                            <label>Team Name:</label>
+                            <input type="text" id="team3-name" placeholder="Team 3 Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Captain (Player 1):</label>
+                            <input type="text" id="team3-player1" placeholder="Captain Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Player 2:</label>
+                            <input type="text" id="team3-player2" placeholder="Player 2 Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Player 3:</label>
+                            <input type="text" id="team3-player3" placeholder="Player 3 Name">
+                        </div>
+                    </div>
+                    
+                    <div class="team-input">
+                        <h4>Team 4</h4>
+                        <div class="form-group">
+                            <label>Team Name:</label>
+                            <input type="text" id="team4-name" placeholder="Team 4 Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Captain (Player 1):</label>
+                            <input type="text" id="team4-player1" placeholder="Captain Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Player 2:</label>
+                            <input type="text" id="team4-player2" placeholder="Player 2 Name">
+                        </div>
+                        <div class="player-input">
+                            <label>Player 3:</label>
+                            <input type="text" id="team4-player3" placeholder="Player 3 Name">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="generate-btn" onclick="generateSchedule()">Generate Tournament Schedule</button>
+        </div>
+        
+        <div id="schedule-output" class="schedule-output">
+            <div class="action-buttons">
+                <button class="back-btn" onclick="showForm()">← Back to Form</button>
+                <button class="calculate-btn" onclick="calculateResults()">🏆 Calculate Results</button>
+                <button class="download-btn" onclick="downloadSchedule()">📥 Download HTML File</button>
+            </div>
+            <div id="generated-schedule"></div>
+            
+            <div id="results-section" class="results-section">
+                <h3>🏆 Tournament Results</h3>
+                <div id="results-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date as default
+        document.getElementById('tournament-date').value = new Date().toISOString().split('T')[0];
+        
+        let currentScheduleData = null;
+        let gameData = [];
+        
+        function validateForm() {
+            const requiredFields = [
+                'tournament-title', 'tournament-date', 'court1', 'court2',
+                'team1-name', 'team1-player1', 'team1-player2', 'team1-player3',
+                'team2-name', 'team2-player1', 'team2-player2', 'team2-player3',
+                'team3-name', 'team3-player1', 'team3-player2', 'team3-player3',
+                'team4-name', 'team4-player1', 'team4-player2', 'team4-player3'
+            ];
+            
+            for (let field of requiredFields) {
+                if (!document.getElementById(field).value.trim()) {
+                    alert(`Please fill in all fields. Missing: ${field.replace('-', ' ')}`);
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+        
+        function generateSchedule() {
+            if (!validateForm()) return;
+            
+            // Get form data
+            const title = document.getElementById('tournament-title').value;
+            const date = formatDate(document.getElementById('tournament-date').value);
+            const court1 = document.getElementById('court1').value;
+            const court2 = document.getElementById('court2').value;
+            
+            const teams = [
+                {
+                    name: document.getElementById('team1-name').value,
+                    players: [
+                        document.getElementById('team1-player1').value,
+                        document.getElementById('team1-player2').value,
+                        document.getElementById('team1-player3').value
+                    ]
+                },
+                {
+                    name: document.getElementById('team2-name').value,
+                    players: [
+                        document.getElementById('team2-player1').value,
+                        document.getElementById('team2-player2').value,
+                        document.getElementById('team2-player3').value
+                    ]
+                },
+                {
+                    name: document.getElementById('team3-name').value,
+                    players: [
+                        document.getElementById('team3-player1').value,
+                        document.getElementById('team3-player2').value,
+                        document.getElementById('team3-player3').value
+                    ]
+                },
+                {
+                    name: document.getElementById('team4-name').value,
+                    players: [
+                        document.getElementById('team4-player1').value,
+                        document.getElementById('team4-player2').value,
+                        document.getElementById('team4-player3').value
+                    ]
+                }
+            ];
+            
+            // Store data for download
+            currentScheduleData = { title, date, court1, court2, teams };
+            
+            // Generate the schedule HTML
+            const scheduleHTML = generateScheduleHTML(title, date, court1, court2, teams);
+            
+            // Show the schedule
+            document.getElementById('generated-schedule').innerHTML = scheduleHTML;
+            document.getElementById('form-section').style.display = 'none';
+            document.getElementById('schedule-output').style.display = 'block';
+            document.getElementById('results-section').style.display = 'none';
+        }
+        
+        function showForm() {
+            document.getElementById('form-section').style.display = 'block';
+            document.getElementById('schedule-output').style.display = 'none';
+        }
+        
+        function calculateResults() {
+            // Collect all scores
+            const games = [];
+            const teamStats = {};
+            const pairStats = {};
+            
+            // Initialize team stats with point tracking
+            currentScheduleData.teams.forEach(team => {
+                teamStats[team.name] = { 
+                    wins: 0, 
+                    losses: 0, 
+                    pointsFor: 0, 
+                    pointsAgainst: 0,
+                    pointDifferential: 0
+                };
+            });
+            
+            // Collect scores from all games
+            for (let i = 1; i <= 18; i++) {
+                const score1Input = document.getElementById(`game-${i}-score1`);
+                const score2Input = document.getElementById(`game-${i}-score2`);
+                
+                if (score1Input && score2Input && score1Input.value && score2Input.value) {
+                    const score1 = parseInt(score1Input.value);
+                    const score2 = parseInt(score2Input.value);
+                    const gameInfo = gameData[i-1];
+                    
+                    if (gameInfo && !isNaN(score1) && !isNaN(score2)) {
+                        // Determine winner
+                        const team1Won = score1 > score2;
+                        const winningTeam = team1Won ? gameInfo.team1Name : gameInfo.team2Name;
+                        const losingTeam = team1Won ? gameInfo.team2Name : gameInfo.team1Name;
+                        
+                        // Update team stats
+                        teamStats[winningTeam].wins++;
+                        teamStats[losingTeam].losses++;
+                        
+                        // Update team point totals
+                        teamStats[gameInfo.team1Name].pointsFor += score1;
+                        teamStats[gameInfo.team1Name].pointsAgainst += score2;
+                        teamStats[gameInfo.team2Name].pointsFor += score2;
+                        teamStats[gameInfo.team2Name].pointsAgainst += score1;
+                        
+                        // Create pair identifiers
+                        const pair1 = `${gameInfo.team1Pair[0]} & ${gameInfo.team1Pair[1]}`;
+                        const pair2 = `${gameInfo.team2Pair[0]} & ${gameInfo.team2Pair[1]}`;
+                        
+                        // Initialize pair stats if not exists
+                        if (!pairStats[pair1]) {
+                            pairStats[pair1] = { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0, team: gameInfo.team1Name };
+                        }
+                        if (!pairStats[pair2]) {
+                            pairStats[pair2] = { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0, team: gameInfo.team2Name };
+                        }
+                        
+                        // Update pair stats
+                        if (team1Won) {
+                            pairStats[pair1].wins++;
+                            pairStats[pair1].pointsFor += score1;
+                            pairStats[pair1].pointsAgainst += score2;
+                            pairStats[pair2].losses++;
+                            pairStats[pair2].pointsFor += score2;
+                            pairStats[pair2].pointsAgainst += score1;
+                        } else {
+                            pairStats[pair2].wins++;
+                            pairStats[pair2].pointsFor += score2;
+                            pairStats[pair2].pointsAgainst += score1;
+                            pairStats[pair1].losses++;
+                            pairStats[pair1].pointsFor += score1;
+                            pairStats[pair1].pointsAgainst += score2;
+                        }
+                    }
+                }
+            }
+            
+            // Calculate team point differentials
+            Object.keys(teamStats).forEach(team => {
+                teamStats[team].pointDifferential = teamStats[team].pointsFor - teamStats[team].pointsAgainst;
+            });
+            
+            // Calculate team results with proper tiebreakers
+            const teamResults = Object.entries(teamStats)
+                .map(([team, stats]) => ({ team, ...stats }))
+                .sort((a, b) => {
+                    // Primary: Most wins
+                    if (b.wins !== a.wins) return b.wins - a.wins;
+                    // Tiebreaker 1: Best point differential
+                    if (b.pointDifferential !== a.pointDifferential) return b.pointDifferential - a.pointDifferential;
+                    // Tiebreaker 2: Most points scored
+                    return b.pointsFor - a.pointsFor;
+                });
+            
+            const pairResults = Object.entries(pairStats)
+                .map(([pair, stats]) => ({
+                    pair,
+                    pointDifferential: stats.pointsFor - stats.pointsAgainst,
+                    ...stats
+                }))
+                .sort((a, b) => b.wins - a.wins || b.pointDifferential - a.pointDifferential);
+            
+            // Get best performing pairs (most wins, then best point differential)
+            const bestPairs = pairResults.filter(p => p.wins > 0).slice(0, 2);
+            
+            // Get pairs with fewest points against (best defense)
+            const bestDefensePairs = pairResults
+                .filter(p => p.pointsAgainst > 0)
+                .sort((a, b) => a.pointsAgainst - b.pointsAgainst)
+                .slice(0, 2);
+            
+            // Display results
+            let resultsHTML = `
+                <div class="result-item">
+                    <strong>🏆 Winning Team:</strong> ${teamResults[0].team} (${teamResults[0].wins} wins, ${teamResults[0].losses} losses, +${teamResults[0].pointDifferential} point differential)
+                </div>
+                <div class="result-item">
+                    <strong>📊 Team Standings:</strong><br>
+                    ${teamResults.map((team, index) => 
+                        `${index + 1}. ${team.team}: ${team.wins} wins, ${team.losses} losses, +${team.pointDifferential} point differential`
+                    ).join('<br>')}
+                    <div class="tiebreaker-note">Ranked by: 1) Most wins, 2) Point differential, 3) Total points scored</div>
+                </div>
+                <div class="result-item">
+                    <strong>⭐ Best Pair Performance (Most Wins):</strong><br>
+                    ${bestPairs.map((pair, index) => 
+                        `${index + 1}. ${pair.pair} (${pair.team}): ${pair.wins} wins, +${pair.pointDifferential} point differential`
+                    ).join('<br>')}
+                </div>
+                <div class="result-item">
+                    <strong>🎯 Best Defensive Pairs (Fewest Points Against):</strong><br>
+                    ${bestDefensePairs.map((pair, index) => 
+                        `${index + 1}. ${pair.pair} (${pair.team}): ${pair.pointsAgainst} points against`
+                    ).join('<br>')}
+                </div>
+            `;
+            
+            document.getElementById('results-content').innerHTML = resultsHTML;
+            document.getElementById('results-section').style.display = 'block';
+        }
+        
+        function downloadSchedule() {
+            if (!currentScheduleData) {
+                alert('No schedule generated yet!');
+                return;
+            }
+            
+            const { title, date, court1, court2, teams } = currentScheduleData;
+            const scheduleHTML = generateScheduleHTML(title, date, court1, court2, teams, true);
+            
+            // Create complete HTML document
+            const fullHTML = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    <style>
+        @media print {
+            body { margin: 0.3in; }
+            .no-print { display: none; }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.2;
+            margin: 15px;
+            background: white;
+            font-size: 12px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+        }
+        
+        .header h2 {
+            margin: 3px 0 0 0;
+            font-size: 14px;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        .teams-legend {
+            margin-bottom: 15px;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 3px;
+        }
+        
+        .teams-legend h3 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .team-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        
+        .team-item {
+            padding: 4px 6px;
+            background: white;
+            border-radius: 2px;
+            border-left: 3px solid #333;
+            font-size: 11px;
+        }
+        
+        .team-name {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .players {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .rivalry-section {
+            margin-bottom: 12px;
+            page-break-inside: avoid;
+        }
+        
+        .rivalry-section.second-half {
+            margin-top: 20px;
+        }
+        
+        .rivalry-section.third-section {
+            margin-top: 20px;
+        }
+        
+        .rivalry-title {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 12px;
+            border-left: 3px solid #333;
+        }
+        
+        .game-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 8px;
+            margin-bottom: 2px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 11px;
+        }
+        
+        .game-row:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .game-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .game-number {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 50px;
+            color: #333;
+        }
+        
+        .matchup {
+            font-size: 12px;
+        }
+        
+        .vs {
+            margin: 0 8px;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .team {
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .score-section {
+            display: flex;
+            align-items: center;
+            min-width: 80px;
+        }
+        
+        .score-input {
+            width: 25px;
+            height: 20px;
+            border: 2px solid #333;
+            margin: 0 3px;
+            text-align: center;
+            font-size: 11px;
+        }
+        
+        .score-label {
+            font-size: 10px;
+            color: #666;
+            margin-right: 5px;
+            font-weight: 500;
+        }
+        
+        .games-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    ${scheduleHTML}
+</body>
+</html>`;
+            
+            // Create and download file
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `badminton-tournament-${date.replace(/\s/g, '-').toLowerCase()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function generateScheduleHTML(title, date, court1, court2, teams, forDownload = false) {
+            // Generate all possible matchups for each team rivalry
+            function generateTeamMatchups(team1, team2) {
+                const matchups = [];
+                const players1 = team1.players;
+                const players2 = team2.players;
+                
+                // All possible pair combinations
+                const pairs1 = [
+                    [players1[0], players1[1]],
+                    [players1[0], players1[2]],
+                    [players1[1], players1[2]]
+                ];
+                
+                const pairs2 = [
+                    [players2[0], players2[1]],
+                    [players2[0], players2[2]],
+                    [players2[1], players2[2]]
+                ];
+                
+                for (let i = 0; i < 3; i++) {
+                    matchups.push({
+                        team1Pair: pairs1[i],
+                        team2Pair: pairs2[i],
+                        team1Name: team1.name,
+                        team2Name: team2.name
+                    });
+                }
+                
+                return matchups;
+            }
+            
+            // Generate all rivalries
+            const rivalries = [
+                { teams: [teams[0], teams[1]], court: court1, games: [1, 2, 3] },
+                { teams: [teams[2], teams[3]], court: court2, games: [4, 5, 6] },
+                { teams: [teams[3], teams[1]], court: court1, games: [7, 8, 9] },
+                { teams: [teams[0], teams[2]], court: court2, games: [10, 11, 12] },
+                { teams: [teams[3], teams[0]], court: court1, games: [13, 14, 15] },
+                { teams: [teams[2], teams[1]], court: court2, games: [16, 17, 18] }
+            ];
+            
+            let gameNumber = 1;
+            let leftColumn = '';
+            let rightColumn = '';
+            gameData = []; // Reset game data
+            
+            rivalries.forEach((rivalry, index) => {
+                const matchups = generateTeamMatchups(rivalry.teams[0], rivalry.teams[1]);
+                const sectionClass = index < 2 ? '' : index < 4 ? 'second-half' : 'third-section';
+                
+                let rivalryHTML = `
+                    <div class="rivalry-section ${sectionClass}">
+                        <div class="rivalry-title">${rivalry.court} - ${rivalry.teams[0].name} vs ${rivalry.teams[1].name} (Games ${rivalry.games[0]}, ${rivalry.games[1]}, ${rivalry.games[2]})</div>
+                `;
+                
+                matchups.forEach((matchup, i) => {
+                    // Store game data for calculations
+                    gameData.push(matchup);
+                    
+                    const scoreInputs = forDownload ? 
+                        `<input type="number" class="score-input" min="0" max="99">
+                         <input type="number" class="score-input" min="0" max="99">` :
+                        `<input type="number" id="game-${gameNumber}-score1" class="score-input" min="0" max="99" placeholder="0">
+                         <input type="number" id="game-${gameNumber}-score2" class="score-input" min="0" max="99" placeholder="0">`;
+                    
+                    rivalryHTML += `
+                        <div class="game-row">
+                            <div class="game-info">
+                                <div class="game-number">Game ${gameNumber}:</div>
+                                <div class="matchup">
+                                    <span class="team">${matchup.team1Pair[0]} & ${matchup.team1Pair[1]}</span>
+                                    <span class="vs">vs</span>
+                                    <span class="team">${matchup.team2Pair[0]} & ${matchup.team2Pair[1]}</span>
+                                </div>
+                            </div>
+                            <div class="score-section">
+                                <span class="score-label">Score:</span>
+                                ${scoreInputs}
+                            </div>
+                        </div>
+                    `;
+                    gameNumber++;
+                });
+                
+                rivalryHTML += '</div>';
+                
+                // Alternate between left and right columns
+                if (index % 2 === 0) {
+                    leftColumn += rivalryHTML;
+                } else {
+                    rightColumn += rivalryHTML;
+                }
+            });
+            
+            return `
+                <style>
+                    @media print {
+                        body { margin: 0.3in; }
+                        .no-print { display: none; }
+                    }
+                    
+                    .schedule-container {
+                        font-family: Arial, sans-serif;
+                        line-height: 1.2;
+                        background: white;
+                        font-size: 12px;
+                    }
+                    
+                    .header {
+                        text-align: center;
+                        margin-bottom: 15px;
+                        border-bottom: 2px solid #333;
+                        padding-bottom: 8px;
+                    }
+                    
+                    .header h1 {
+                        margin: 0;
+                        font-size: 20px;
+                        color: #333;
+                    }
+                    
+                    .header h2 {
+                        margin: 3px 0 0 0;
+                        font-size: 14px;
+                        color: #666;
+                        font-weight: normal;
+                    }
+                    
+                    .teams-legend {
+                        margin-bottom: 15px;
+                        padding: 8px;
+                        background: #f5f5f5;
+                        border-radius: 3px;
+                    }
+                    
+                    .teams-legend h3 {
+                        margin: 0 0 5px 0;
+                        color: #333;
+                        font-size: 14px;
+                    }
+                    
+                    .team-list {
+                        display: grid;
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 8px;
+                    }
+                    
+                    .team-item {
+                        padding: 4px 6px;
+                        background: white;
+                        border-radius: 2px;
+                        border-left: 3px solid #333;
+                        font-size: 11px;
+                    }
+                    
+                    .team-name {
+                        font-weight: bold;
+                        margin-bottom: 2px;
+                    }
+                    
+                    .players {
+                        font-size: 11px;
+                        color: #666;
+                    }
+                    
+                    .rivalry-section {
+                        margin-bottom: 12px;
+                        page-break-inside: avoid;
+                    }
+                    
+                    .rivalry-section.second-half {
+                        margin-top: 20px;
+                    }
+                    
+                    .rivalry-section.third-section {
+                        margin-top: 20px;
+                    }
+                    
+                    .rivalry-title {
+                        background: #f0f0f0;
+                        padding: 4px 8px;
+                        margin-bottom: 5px;
+                        font-weight: bold;
+                        font-size: 12px;
+                        border-left: 3px solid #333;
+                    }
+                    
+                    .game-row {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 3px 8px;
+                        margin-bottom: 2px;
+                        border: 1px solid #ddd;
+                        background: white;
+                        font-size: 11px;
+                    }
+                    
+                    .game-row:nth-child(even) {
+                        background: #f9f9f9;
+                    }
+                    
+                    .game-info {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                    }
+                    
+                    .game-number {
+                        font-weight: bold;
+                        margin-right: 10px;
+                        min-width: 50px;
+                        color: #333;
+                    }
+                    
+                    .matchup {
+                        font-size: 12px;
+                    }
+                    
+                    .vs {
+                        margin: 0 8px;
+                        font-weight: bold;
+                        color: #666;
+                    }
+                    
+                    .team {
+                        font-weight: 600;
+                        font-size: 12px;
+                    }
+                    
+                    .score-section {
+                        display: flex;
+                        align-items: center;
+                        min-width: 80px;
+                    }
+                    
+                    .score-input {
+                        width: 25px;
+                        height: 20px;
+                        border: 2px solid #333;
+                        margin: 0 3px;
+                        text-align: center;
+                        font-size: 11px;
+                        padding: 2px;
+                    }
+                    
+                    .score-label {
+                        font-size: 10px;
+                        color: #666;
+                        margin-right: 5px;
+                        font-weight: 500;
+                    }
+                    
+                    .games-container {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 15px;
+                    }
+                    
+                    .left-column, .right-column {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                </style>
+                
+                <div class="schedule-container">
+                    <div class="header">
+                        <h1>${title} (${date})</h1>
+                        <h2>18-Game Complete Tournament</h2>
+                    </div>
+
+                    <div class="teams-legend">
+                        <h3>👥 Team Rosters</h3>
+                        <div class="team-list">
+                            ${teams.map(team => `
+                                <div class="team-item">
+                                    <div class="team-name">${team.name}</div>
+                                    <div class="players">${team.players.join(', ')}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="games-container">
+                        <div class="left-column">
+                            ${leftColumn}
+                        </div>
+                        <div class="right-column">
+                            ${rightColumn}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
