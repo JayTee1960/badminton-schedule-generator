@@ -215,56 +215,7 @@
             margin-top: 5px;
         }
     </style>
-
-    <script>
-      
-      const files = {
-        
-      }
-    
-
-
-      window.fs = {}
-      window.fs.readFile = (fileName) => {
-        // return array buffer
-        return new Promise((resolve) => {
-          const content = files[fileName]
-          const decoded = atob(content)
-          const arr = new Uint8Array(decoded.length)
-          for (let i = 0; i < decoded.length; i++) {
-            arr[i] = decoded.charCodeAt(i)
-          }
-          resolve(arr)
-        })
-      }
-
-      // stub out window.user.get, window.db.get and window.db.set so that it works when you download the html doc
-      window.db = {}
-      window.db.get = (key) => {
-        // use localStorage to store the artifact
-        const value = localStorage.getItem(key)
-        if (value) {
-          return JSON.parse(value)
-        }
-
-        return null
-      }
-
-      window.db.set = (key, value) => {
-        // use localStorage to store the artifact
-        localStorage.setItem(key, JSON.stringify(value))
-      }
-
-      window.user = {}
-      window.user.get = () => {
-        return {
-          userId: "user-id-placeholder",
-          email: "placeholder@test.com"
-        }
-      }
-
-    </script>
-    </head>
+</head>
 <body>
     <div class="container">
         <div class="header">
