@@ -214,57 +214,118 @@
             font-style: italic;
             margin-top: 5px;
         }
+
+        /* Print-specific styles - LANDSCAPE */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 0.3in;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0.2in;
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            /* Hide form header when printing */
+            .header {
+                display: none !important;
+            }
+            
+            /* Hide interactive elements when printing */
+            .action-buttons,
+            .back-btn,
+            .download-btn,
+            .calculate-btn,
+            .results-section {
+                display: none !important;
+            }
+            
+            .schedule-output {
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+            
+            /* Optimize schedule for landscape printing */
+            .schedule-container {
+                font-size: 10px !important;
+            }
+            
+            .schedule-header h1 {
+                font-size: 18px !important;
+            }
+            
+            .schedule-header h2 {
+                font-size: 12px !important;
+            }
+            
+            .teams-legend {
+                margin-bottom: 10px !important;
+                padding: 5px !important;
+            }
+            
+            .teams-legend h3 {
+                font-size: 12px !important;
+            }
+            
+            .team-item {
+                font-size: 9px !important;
+            }
+            
+            .rivalry-title {
+                font-size: 10px !important;
+                padding: 3px 6px !important;
+            }
+            
+            .game-row {
+                padding: 2px 6px !important;
+                margin-bottom: 1px !important;
+                font-size: 9px !important;
+            }
+            
+            .game-number {
+                font-size: 10px !important;
+                min-width: 45px !important;
+            }
+            
+            .matchup, .team {
+                font-size: 10px !important;
+            }
+            
+            .score-input {
+                width: 22px !important;
+                height: 18px !important;
+                font-size: 9px !important;
+                border: 1px solid #333 !important;
+            }
+            
+            .score-label {
+                font-size: 9px !important;
+            }
+            
+            .games-container {
+                gap: 12px !important;
+            }
+            
+            .rivalry-section {
+                margin-bottom: 8px !important;
+                page-break-inside: avoid;
+            }
+            
+            .rivalry-section.second-half,
+            .rivalry-section.third-section {
+                margin-top: 10px !important;
+            }
+        }
     </style>
-
-    <script>
-      
-      const files = {
-        
-      }
-    
-
-
-      window.fs = {}
-      window.fs.readFile = (fileName) => {
-        // return array buffer
-        return new Promise((resolve) => {
-          const content = files[fileName]
-          const decoded = atob(content)
-          const arr = new Uint8Array(decoded.length)
-          for (let i = 0; i < decoded.length; i++) {
-            arr[i] = decoded.charCodeAt(i)
-          }
-          resolve(arr)
-        })
-      }
-
-      // stub out window.user.get, window.db.get and window.db.set so that it works when you download the html doc
-      window.db = {}
-      window.db.get = (key) => {
-        // use localStorage to store the artifact
-        const value = localStorage.getItem(key)
-        if (value) {
-          return JSON.parse(value)
-        }
-
-        return null
-      }
-
-      window.db.set = (key, value) => {
-        // use localStorage to store the artifact
-        localStorage.setItem(key, JSON.stringify(value))
-      }
-
-      window.user = {}
-      window.user.get = () => {
-        return {
-          userId: "user-id-placeholder",
-          email: "placeholder@test.com"
-        }
-      }
-
-    </script>
-    </head>
+</head>
 <body>
     <div class="container">
         <div class="header">
@@ -645,7 +706,7 @@
             const { title, date, court1, court2, teams } = currentScheduleData;
             const scheduleHTML = generateScheduleHTML(title, date, court1, court2, teams, true);
             
-            // Create complete HTML document
+            // Create complete HTML document with landscape print optimization
             const fullHTML = `<!DOCTYPE html>
 <html>
 <head>
@@ -653,8 +714,86 @@
     <title>${title}</title>
     <style>
         @media print {
-            body { margin: 0.3in; }
-            .no-print { display: none; }
+            @page {
+                size: landscape;
+                margin: 0.3in;
+            }
+            
+            body { 
+                margin: 0;
+                padding: 0.2in;
+                background: white;
+            }
+            
+            .schedule-container {
+                font-size: 10px !important;
+            }
+            
+            .schedule-header h1 {
+                font-size: 18px !important;
+            }
+            
+            .schedule-header h2 {
+                font-size: 12px !important;
+            }
+            
+            .teams-legend {
+                margin-bottom: 10px !important;
+                padding: 5px !important;
+            }
+            
+            .teams-legend h3 {
+                font-size: 12px !important;
+            }
+            
+            .team-item {
+                font-size: 9px !important;
+            }
+            
+            .rivalry-title {
+                font-size: 10px !important;
+                padding: 3px 6px !important;
+            }
+            
+            .game-row {
+                padding: 2px 6px !important;
+                margin-bottom: 1px !important;
+                font-size: 9px !important;
+            }
+            
+            .game-number {
+                font-size: 10px !important;
+                min-width: 45px !important;
+            }
+            
+            .matchup, .team {
+                font-size: 10px !important;
+            }
+            
+            .score-input {
+                width: 22px !important;
+                height: 18px !important;
+                font-size: 9px !important;
+                border: 1px solid #333 !important;
+            }
+            
+            .score-label {
+                font-size: 9px !important;
+            }
+            
+            .games-container {
+                gap: 12px !important;
+            }
+            
+            .rivalry-section {
+                margin-bottom: 8px !important;
+                page-break-inside: avoid;
+            }
+            
+            .rivalry-section.second-half,
+            .rivalry-section.third-section {
+                margin-top: 10px !important;
+            }
         }
         
         body {
@@ -665,20 +804,20 @@
             font-size: 12px;
         }
         
-        .header {
+        .schedule-header {
             text-align: center;
             margin-bottom: 15px;
             border-bottom: 2px solid #333;
             padding-bottom: 8px;
         }
         
-        .header h1 {
+        .schedule-header h1 {
             margin: 0;
             font-size: 20px;
             color: #333;
         }
         
-        .header h2 {
+        .schedule-header h2 {
             margin: 3px 0 0 0;
             font-size: 14px;
             color: #666;
@@ -936,8 +1075,86 @@
             return `
                 <style>
                     @media print {
-                        body { margin: 0.3in; }
-                        .no-print { display: none; }
+                        @page {
+                            size: landscape;
+                            margin: 0.3in;
+                        }
+                        
+                        body { 
+                            margin: 0;
+                            padding: 0.2in;
+                            background: white;
+                        }
+                        
+                        .schedule-container {
+                            font-size: 10px !important;
+                        }
+                        
+                        .schedule-header h1 {
+                            font-size: 18px !important;
+                        }
+                        
+                        .schedule-header h2 {
+                            font-size: 12px !important;
+                        }
+                        
+                        .teams-legend {
+                            margin-bottom: 10px !important;
+                            padding: 5px !important;
+                        }
+                        
+                        .teams-legend h3 {
+                            font-size: 12px !important;
+                        }
+                        
+                        .team-item {
+                            font-size: 9px !important;
+                        }
+                        
+                        .rivalry-title {
+                            font-size: 10px !important;
+                            padding: 3px 6px !important;
+                        }
+                        
+                        .game-row {
+                            padding: 2px 6px !important;
+                            margin-bottom: 1px !important;
+                            font-size: 9px !important;
+                        }
+                        
+                        .game-number {
+                            font-size: 10px !important;
+                            min-width: 45px !important;
+                        }
+                        
+                        .matchup, .team {
+                            font-size: 10px !important;
+                        }
+                        
+                        .score-input {
+                            width: 22px !important;
+                            height: 18px !important;
+                            font-size: 9px !important;
+                            border: 1px solid #333 !important;
+                        }
+                        
+                        .score-label {
+                            font-size: 9px !important;
+                        }
+                        
+                        .games-container {
+                            gap: 12px !important;
+                        }
+                        
+                        .rivalry-section {
+                            margin-bottom: 8px !important;
+                            page-break-inside: avoid;
+                        }
+                        
+                        .rivalry-section.second-half,
+                        .rivalry-section.third-section {
+                            margin-top: 10px !important;
+                        }
                     }
                     
                     .schedule-container {
@@ -947,20 +1164,20 @@
                         font-size: 12px;
                     }
                     
-                    .header {
+                    .schedule-header {
                         text-align: center;
                         margin-bottom: 15px;
                         border-bottom: 2px solid #333;
                         padding-bottom: 8px;
                     }
                     
-                    .header h1 {
+                    .schedule-header h1 {
                         margin: 0;
                         font-size: 20px;
                         color: #333;
                     }
                     
-                    .header h2 {
+                    .schedule-header h2 {
                         margin: 3px 0 0 0;
                         font-size: 14px;
                         color: #666;
@@ -1105,7 +1322,7 @@
                 </style>
                 
                 <div class="schedule-container">
-                    <div class="header">
+                    <div class="schedule-header">
                         <h1>${title} (${date})</h1>
                         <h2>18-Game Complete Tournament</h2>
                     </div>
