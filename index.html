@@ -176,168 +176,6 @@
         .download-btn:hover {
             background: #218838;
         }
-
-        /* Schedule Display Styles */
-        .schedule-container {
-            font-family: Arial, sans-serif;
-            line-height: 1.2;
-            background: white;
-            font-size: 12px;
-        }
-        
-        .schedule-header {
-            text-align: center;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 8px;
-        }
-        
-        .schedule-header h1 {
-            margin: 0;
-            font-size: 20px;
-            color: #333;
-        }
-        
-        .schedule-header h2 {
-            margin: 3px 0 0 0;
-            font-size: 14px;
-            color: #666;
-            font-weight: normal;
-        }
-        
-        .teams-legend {
-            margin-bottom: 15px;
-            padding: 8px;
-            background: #f5f5f5;
-            border-radius: 3px;
-        }
-        
-        .teams-legend h3 {
-            margin: 0 0 5px 0;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .team-list {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-        
-        .team-item {
-            padding: 4px 6px;
-            background: white;
-            border-radius: 2px;
-            border-left: 3px solid #333;
-            font-size: 11px;
-        }
-        
-        .team-name {
-            font-weight: bold;
-            margin-bottom: 2px;
-        }
-        
-        .players {
-            font-size: 11px;
-            color: #666;
-        }
-        
-        .rivalry-section {
-            margin-bottom: 12px;
-            page-break-inside: avoid;
-        }
-        
-        .rivalry-section.second-half {
-            margin-top: 20px;
-        }
-        
-        .rivalry-section.third-section {
-            margin-top: 20px;
-        }
-        
-        .rivalry-title {
-            background: #f0f0f0;
-            padding: 4px 8px;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 12px;
-            border-left: 3px solid #333;
-        }
-        
-        .game-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 3px 8px;
-            margin-bottom: 2px;
-            border: 1px solid #ddd;
-            background: white;
-            font-size: 11px;
-        }
-        
-        .game-row:nth-child(even) {
-            background: #f9f9f9;
-        }
-        
-        .game-info {
-            flex: 1;
-            display: flex;
-            align-items: center;
-        }
-        
-        .game-number {
-            font-weight: bold;
-            margin-right: 10px;
-            min-width: 50px;
-            color: #333;
-        }
-        
-        .matchup {
-            font-size: 12px;
-        }
-        
-        .vs {
-            margin: 0 8px;
-            font-weight: bold;
-            color: #666;
-        }
-        
-        .team {
-            font-weight: 600;
-            font-size: 12px;
-        }
-        
-        .score-section {
-            display: flex;
-            align-items: center;
-            min-width: 80px;
-        }
-        
-        .score-box {
-            width: 25px;
-            height: 20px;
-            border: 2px solid #333;
-            margin: 0 3px;
-            display: inline-block;
-        }
-        
-        .score-label {
-            font-size: 10px;
-            color: #666;
-            margin-right: 5px;
-            font-weight: 500;
-        }
-        
-        .games-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .left-column, .right-column {
-            display: flex;
-            flex-direction: column;
-        }
     </style>
 </head>
 <body>
@@ -482,7 +320,7 @@
                 'team1-name', 'team1-player1', 'team1-player2', 'team1-player3',
                 'team2-name', 'team2-player1', 'team2-player2', 'team2-player3',
                 'team3-name', 'team3-player1', 'team3-player2', 'team3-player3',
-                'team4-name', '4-player1', 'team4-player2', 'team4-player3'
+                'team4-name', 'team4-player1', 'team4-player2', 'team4-player3'
             ];
             
             for (let field of requiredFields) {
@@ -852,8 +690,176 @@
             });
             
             return `
+                <style>
+                    @media print {
+                        body { margin: 0.3in; }
+                        .no-print { display: none; }
+                    }
+                    
+                    .schedule-container {
+                        font-family: Arial, sans-serif;
+                        line-height: 1.2;
+                        background: white;
+                        font-size: 12px;
+                    }
+                    
+                    .header {
+                        text-align: center;
+                        margin-bottom: 15px;
+                        border-bottom: 2px solid #333;
+                        padding-bottom: 8px;
+                    }
+                    
+                    .header h1 {
+                        margin: 0;
+                        font-size: 20px;
+                        color: #333;
+                    }
+                    
+                    .header h2 {
+                        margin: 3px 0 0 0;
+                        font-size: 14px;
+                        color: #666;
+                        font-weight: normal;
+                    }
+                    
+                    .teams-legend {
+                        margin-bottom: 15px;
+                        padding: 8px;
+                        background: #f5f5f5;
+                        border-radius: 3px;
+                    }
+                    
+                    .teams-legend h3 {
+                        margin: 0 0 5px 0;
+                        color: #333;
+                        font-size: 14px;
+                    }
+                    
+                    .team-list {
+                        display: grid;
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 8px;
+                    }
+                    
+                    .team-item {
+                        padding: 4px 6px;
+                        background: white;
+                        border-radius: 2px;
+                        border-left: 3px solid #333;
+                        font-size: 11px;
+                    }
+                    
+                    .team-name {
+                        font-weight: bold;
+                        margin-bottom: 2px;
+                    }
+                    
+                    .players {
+                        font-size: 11px;
+                        color: #666;
+                    }
+                    
+                    .rivalry-section {
+                        margin-bottom: 12px;
+                        page-break-inside: avoid;
+                    }
+                    
+                    .rivalry-section.second-half {
+                        margin-top: 20px;
+                    }
+                    
+                    .rivalry-section.third-section {
+                        margin-top: 20px;
+                    }
+                    
+                    .rivalry-title {
+                        background: #f0f0f0;
+                        padding: 4px 8px;
+                        margin-bottom: 5px;
+                        font-weight: bold;
+                        font-size: 12px;
+                        border-left: 3px solid #333;
+                    }
+                    
+                    .game-row {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 3px 8px;
+                        margin-bottom: 2px;
+                        border: 1px solid #ddd;
+                        background: white;
+                        font-size: 11px;
+                    }
+                    
+                    .game-row:nth-child(even) {
+                        background: #f9f9f9;
+                    }
+                    
+                    .game-info {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                    }
+                    
+                    .game-number {
+                        font-weight: bold;
+                        margin-right: 10px;
+                        min-width: 50px;
+                        color: #333;
+                    }
+                    
+                    .matchup {
+                        font-size: 12px;
+                    }
+                    
+                    .vs {
+                        margin: 0 8px;
+                        font-weight: bold;
+                        color: #666;
+                    }
+                    
+                    .team {
+                        font-weight: 600;
+                        font-size: 12px;
+                    }
+                    
+                    .score-section {
+                        display: flex;
+                        align-items: center;
+                        min-width: 80px;
+                    }
+                    
+                    .score-box {
+                        width: 25px;
+                        height: 20px;
+                        border: 2px solid #333;
+                        margin: 0 3px;
+                        display: inline-block;
+                    }
+                    
+                    .score-label {
+                        font-size: 10px;
+                        color: #666;
+                        margin-right: 5px;
+                        font-weight: 500;
+                    }
+                    
+                    .games-container {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 15px;
+                    }
+                    
+                    .left-column, .right-column {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                </style>
+                
                 <div class="schedule-container">
-                    <div class="schedule-header">
+                    <div class="header">
                         <h1>${title} (${date})</h1>
                         <h2>18-Game Complete Tournament</h2>
                     </div>
