@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             background: #f5f5f5;
@@ -122,11 +122,6 @@
             background: #555;
         }
         
-        .generate-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        
         .court-inputs {
             display: flex;
             gap: 15px;
@@ -139,19 +134,16 @@
         .schedule-output {
             display: none;
             margin-top: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 5px;
-            border: 2px solid #333;
         }
         
         .action-buttons {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         
-        .back-btn, .download-btn, .calculate-btn {
+        .back-btn, .download-btn, .calculate-btn, .clear-scores-btn {
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
@@ -186,6 +178,15 @@
             background: #0056b3;
         }
         
+        .clear-scores-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .clear-scores-btn:hover {
+            background: #c82333;
+        }
+        
         .results-section {
             margin-top: 20px;
             padding: 20px;
@@ -214,8 +215,182 @@
             font-style: italic;
             margin-top: 5px;
         }
+        
+        .schedule-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+        
+        .score-input.has-value {
+            background-color: #e8f5e9;
+            border-color: #28a745;
+        }
 
-        /* Print-specific styles - LANDSCAPE */
+        .schedule-container {
+            font-family: Arial, sans-serif;
+            line-height: 1.2;
+            background: white;
+            font-size: 12px;
+        }
+        
+        .schedule-header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+        }
+        
+        .schedule-header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+        }
+        
+        .schedule-header h2 {
+            margin: 3px 0 0 0;
+            font-size: 14px;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        .teams-legend {
+            margin-bottom: 15px;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 3px;
+        }
+        
+        .teams-legend h3 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .team-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        
+        .team-item {
+            padding: 4px 6px;
+            background: white;
+            border-radius: 2px;
+            border-left: 3px solid #333;
+            font-size: 11px;
+        }
+        
+        .team-name {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .players {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .rivalry-section {
+            margin-bottom: 12px;
+            page-break-inside: avoid;
+        }
+        
+        .rivalry-section.second-half {
+            margin-top: 20px;
+        }
+        
+        .rivalry-section.third-section {
+            margin-top: 20px;
+        }
+        
+        .rivalry-title {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 12px;
+            border-left: 3px solid #333;
+        }
+        
+        .game-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 8px;
+            margin-bottom: 2px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 11px;
+        }
+        
+        .game-row:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .game-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .game-number {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 50px;
+            color: #333;
+        }
+        
+        .matchup {
+            font-size: 12px;
+        }
+        
+        .vs {
+            margin: 0 8px;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .team {
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .score-section {
+            display: flex;
+            align-items: center;
+            min-width: 80px;
+        }
+        
+        .score-input {
+            width: 25px;
+            height: 20px;
+            border: 2px solid #333;
+            margin: 0 3px;
+            text-align: center;
+            font-size: 11px;
+            padding: 2px;
+        }
+        
+        .score-label {
+            font-size: 10px;
+            color: #666;
+            margin-right: 5px;
+            font-weight: 500;
+        }
+        
+        .games-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
+        }
+
         @media print {
             @page {
                 size: landscape;
@@ -233,95 +408,18 @@
                 padding: 0;
             }
             
-            /* Hide form header when printing */
             .header {
                 display: none !important;
             }
             
-            /* Hide interactive elements when printing */
             .action-buttons,
-            .back-btn,
-            .download-btn,
-            .calculate-btn,
             .results-section {
                 display: none !important;
             }
             
-            .schedule-output {
+            .schedule-wrapper {
                 border: none;
                 padding: 0;
-                margin: 0;
-            }
-            
-            /* Optimize schedule for landscape printing */
-            .schedule-container {
-                font-size: 10px !important;
-            }
-            
-            .schedule-header h1 {
-                font-size: 18px !important;
-            }
-            
-            .schedule-header h2 {
-                font-size: 12px !important;
-            }
-            
-            .teams-legend {
-                margin-bottom: 10px !important;
-                padding: 5px !important;
-            }
-            
-            .teams-legend h3 {
-                font-size: 12px !important;
-            }
-            
-            .team-item {
-                font-size: 9px !important;
-            }
-            
-            .rivalry-title {
-                font-size: 10px !important;
-                padding: 3px 6px !important;
-            }
-            
-            .game-row {
-                padding: 2px 6px !important;
-                margin-bottom: 1px !important;
-                font-size: 9px !important;
-            }
-            
-            .game-number {
-                font-size: 10px !important;
-                min-width: 45px !important;
-            }
-            
-            .matchup, .team {
-                font-size: 10px !important;
-            }
-            
-            .score-input {
-                width: 22px !important;
-                height: 18px !important;
-                font-size: 9px !important;
-                border: 1px solid #333 !important;
-            }
-            
-            .score-label {
-                font-size: 9px !important;
-            }
-            
-            .games-container {
-                gap: 12px !important;
-            }
-            
-            .rivalry-section {
-                margin-bottom: 8px !important;
-                page-break-inside: avoid;
-            }
-            
-            .rivalry-section.second-half,
-            .rivalry-section.third-section {
-                margin-top: 10px !important;
             }
         }
     </style>
@@ -425,7 +523,7 @@
                     <div class="team-input">
                         <h4>Team 4</h4>
                         <div class="form-group">
-                            <label>Team Name:</label>
+                            <label>Team Name: </label>
                             <input type="text" id="team4-name" placeholder="Team 4 Name">
                         </div>
                         <div class="player-input">
@@ -444,16 +542,20 @@
                 </div>
             </div>
             
-            <button class="generate-btn" onclick="generateSchedule()">Generate Tournament Schedule</button>
+            <button class="generate-btn" id="generate-btn">Generate Tournament Schedule</button>
         </div>
         
         <div id="schedule-output" class="schedule-output">
             <div class="action-buttons">
-                <button class="back-btn" onclick="showForm()">← Back to Form</button>
-                <button class="calculate-btn" onclick="calculateResults()">🏆 Calculate Results</button>
-                <button class="download-btn" onclick="downloadSchedule()">📥 Download HTML File</button>
+                <button class="back-btn" id="back-btn">← Back to Form</button>
+                <button class="calculate-btn" id="calculate-btn">🏆 Calculate Results</button>
+                <button class="clear-scores-btn" id="clear-scores-btn">🗑️ Clear All Scores</button>
+                <button class="download-btn" id="download-btn">📥 Download HTML File</button>
             </div>
-            <div id="generated-schedule"></div>
+            
+            <div class="schedule-wrapper">
+                <div id="generated-schedule"></div>
+            </div>
             
             <div id="results-section" class="results-section">
                 <h3>🏆 Tournament Results</h3>
@@ -469,6 +571,15 @@
         let currentScheduleData = null;
         let gameData = [];
         
+        // Add event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('generate-btn').addEventListener('click', generateSchedule);
+            document.getElementById('back-btn').addEventListener('click', showForm);
+            document.getElementById('calculate-btn').addEventListener('click', calculateResults);
+            document.getElementById('clear-scores-btn').addEventListener('click', clearAllScores);
+            document.getElementById('download-btn').addEventListener('click', downloadSchedule);
+        });
+        
         function validateForm() {
             const requiredFields = [
                 'tournament-title', 'tournament-date', 'court1', 'court2',
@@ -479,8 +590,9 @@
             ];
             
             for (let field of requiredFields) {
-                if (!document.getElementById(field).value.trim()) {
-                    alert(`Please fill in all fields. Missing: ${field.replace('-', ' ')}`);
+                const element = document.getElementById(field);
+                if (!element || !element.value.trim()) {
+                    alert(`Please fill in: ${field.replace(/-/g, ' ')}`);
                     return false;
                 }
             }
@@ -499,7 +611,6 @@
         function generateSchedule() {
             if (!validateForm()) return;
             
-            // Get form data
             const title = document.getElementById('tournament-title').value;
             const date = formatDate(document.getElementById('tournament-date').value);
             const court1 = document.getElementById('court1').value;
@@ -540,31 +651,63 @@
                 }
             ];
             
-            // Store data for download
             currentScheduleData = { title, date, court1, court2, teams };
             
-            // Generate the schedule HTML
             const scheduleHTML = generateScheduleHTML(title, date, court1, court2, teams);
             
-            // Show the schedule
             document.getElementById('generated-schedule').innerHTML = scheduleHTML;
             document.getElementById('form-section').style.display = 'none';
             document.getElementById('schedule-output').style.display = 'block';
             document.getElementById('results-section').style.display = 'none';
+            
+            addScoreInputListeners();
+        }
+        
+        function addScoreInputListeners() {
+            for (let i = 1; i <= 18; i++) {
+                const score1 = document.getElementById(`game-${i}-score1`);
+                const score2 = document.getElementById(`game-${i}-score2`);
+                
+                if (score1 && score2) {
+                    score1.addEventListener('input', function() {
+                        this.classList.toggle('has-value', this.value !== '');
+                    });
+                    
+                    score2.addEventListener('input', function() {
+                        this.classList.toggle('has-value', this.value !== '');
+                    });
+                }
+            }
         }
         
         function showForm() {
-            document.getElementById('form-section').style.display = 'block';
-            document.getElementById('schedule-output').style.display = 'none';
+            if (confirm('Going back will lose all entered scores. Continue?')) {
+                document.getElementById('form-section').style.display = 'block';
+                document.getElementById('schedule-output').style.display = 'none';
+            }
+        }
+        
+        function clearAllScores() {
+            if (confirm('This will clear all entered scores. Continue?')) {
+                for (let i = 1; i <= 18; i++) {
+                    const score1 = document.getElementById(`game-${i}-score1`);
+                    const score2 = document.getElementById(`game-${i}-score2`);
+                    
+                    if (score1 && score2) {
+                        score1.value = '';
+                        score2.value = '';
+                        score1.classList.remove('has-value');
+                        score2.classList.remove('has-value');
+                    }
+                }
+                document.getElementById('results-section').style.display = 'none';
+            }
         }
         
         function calculateResults() {
-            // Collect all scores
-            const games = [];
             const teamStats = {};
             const pairStats = {};
             
-            // Initialize team stats with point tracking
             currentScheduleData.teams.forEach(team => {
                 teamStats[team.name] = { 
                     wins: 0, 
@@ -575,7 +718,8 @@
                 };
             });
             
-            // Collect scores from all games
+            let gamesWithScores = 0;
+            
             for (let i = 1; i <= 18; i++) {
                 const score1Input = document.getElementById(`game-${i}-score1`);
                 const score2Input = document.getElementById(`game-${i}-score2`);
@@ -586,26 +730,23 @@
                     const gameInfo = gameData[i-1];
                     
                     if (gameInfo && !isNaN(score1) && !isNaN(score2)) {
-                        // Determine winner
+                        gamesWithScores++;
+                        
                         const team1Won = score1 > score2;
                         const winningTeam = team1Won ? gameInfo.team1Name : gameInfo.team2Name;
                         const losingTeam = team1Won ? gameInfo.team2Name : gameInfo.team1Name;
                         
-                        // Update team stats
                         teamStats[winningTeam].wins++;
                         teamStats[losingTeam].losses++;
                         
-                        // Update team point totals
                         teamStats[gameInfo.team1Name].pointsFor += score1;
                         teamStats[gameInfo.team1Name].pointsAgainst += score2;
                         teamStats[gameInfo.team2Name].pointsFor += score2;
                         teamStats[gameInfo.team2Name].pointsAgainst += score1;
                         
-                        // Create pair identifiers
                         const pair1 = `${gameInfo.team1Pair[0]} & ${gameInfo.team1Pair[1]}`;
                         const pair2 = `${gameInfo.team2Pair[0]} & ${gameInfo.team2Pair[1]}`;
                         
-                        // Initialize pair stats if not exists
                         if (!pairStats[pair1]) {
                             pairStats[pair1] = { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0, team: gameInfo.team1Name };
                         }
@@ -613,7 +754,6 @@
                             pairStats[pair2] = { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0, team: gameInfo.team2Name };
                         }
                         
-                        // Update pair stats
                         if (team1Won) {
                             pairStats[pair1].wins++;
                             pairStats[pair1].pointsFor += score1;
@@ -633,20 +773,20 @@
                 }
             }
             
-            // Calculate team point differentials
+            if (gamesWithScores === 0) {
+                alert('Please enter scores for at least one game before calculating results.');
+                return;
+            }
+            
             Object.keys(teamStats).forEach(team => {
                 teamStats[team].pointDifferential = teamStats[team].pointsFor - teamStats[team].pointsAgainst;
             });
             
-            // Calculate team results with proper tiebreakers
             const teamResults = Object.entries(teamStats)
                 .map(([team, stats]) => ({ team, ...stats }))
                 .sort((a, b) => {
-                    // Primary: Most wins
                     if (b.wins !== a.wins) return b.wins - a.wins;
-                    // Tiebreaker 1: Best point differential
                     if (b.pointDifferential !== a.pointDifferential) return b.pointDifferential - a.pointDifferential;
-                    // Tiebreaker 2: Most points scored
                     return b.pointsFor - a.pointsFor;
                 });
             
@@ -658,43 +798,55 @@
                 }))
                 .sort((a, b) => b.wins - a.wins || b.pointDifferential - a.pointDifferential);
             
-            // Get best performing pairs (most wins, then best point differential)
             const bestPairs = pairResults.filter(p => p.wins > 0).slice(0, 2);
             
-            // Get pairs with fewest points against (best defense)
             const bestDefensePairs = pairResults
                 .filter(p => p.pointsAgainst > 0)
                 .sort((a, b) => a.pointsAgainst - b.pointsAgainst)
                 .slice(0, 2);
             
-            // Display results
             let resultsHTML = `
                 <div class="result-item">
-                    <strong>🏆 Winning Team:</strong> ${teamResults[0].team} (${teamResults[0].wins} wins, ${teamResults[0].losses} losses, +${teamResults[0].pointDifferential} point differential)
+                    <strong>📊 Games Completed:</strong> ${gamesWithScores} of 18
+                </div>
+                <div class="result-item">
+                    <strong>🏆 Current Leader:</strong> ${teamResults[0].team} (${teamResults[0].wins} wins, ${teamResults[0].losses} losses, ${teamResults[0].pointDifferential > 0 ? '+' : ''}${teamResults[0].pointDifferential} point differential)
                 </div>
                 <div class="result-item">
                     <strong>📊 Team Standings:</strong><br>
                     ${teamResults.map((team, index) => 
-                        `${index + 1}. ${team.team}: ${team.wins} wins, ${team.losses} losses, +${team.pointDifferential} point differential`
+                        `${index + 1}. ${team.team}: ${team.wins}W-${team.losses}L, ${team.pointDifferential > 0 ? '+' : ''}${team.pointDifferential} differential (${team.pointsFor} pts for, ${team.pointsAgainst} pts against)`
                     ).join('<br>')}
                     <div class="tiebreaker-note">Ranked by: 1) Most wins, 2) Point differential, 3) Total points scored</div>
                 </div>
-                <div class="result-item">
-                    <strong>⭐ Best Pair Performance (Most Wins):</strong><br>
-                    ${bestPairs.map((pair, index) => 
-                        `${index + 1}. ${pair.pair} (${pair.team}): ${pair.wins} wins, +${pair.pointDifferential} point differential`
-                    ).join('<br>')}
-                </div>
-                <div class="result-item">
-                    <strong>🎯 Best Defensive Pairs (Fewest Points Against):</strong><br>
-                    ${bestDefensePairs.map((pair, index) => 
-                        `${index + 1}. ${pair.pair} (${pair.team}): ${pair.pointsAgainst} points against`
-                    ).join('<br>')}
-                </div>
             `;
+            
+            if (bestPairs.length > 0) {
+                resultsHTML += `
+                    <div class="result-item">
+                        <strong>⭐ Best Pair Performance (Most Wins):</strong><br>
+                        ${bestPairs.map((pair, index) => 
+                            `${index + 1}. ${pair.pair} (${pair.team}): ${pair.wins}W-${pair.losses}L, ${pair.pointDifferential > 0 ? '+' : ''}${pair.pointDifferential} differential`
+                        ).join('<br>')}
+                    </div>
+                `;
+            }
+            
+            if (bestDefensePairs.length > 0) {
+                resultsHTML += `
+                    <div class="result-item">
+                        <strong>🎯 Best Defensive Pairs (Fewest Points Against):</strong><br>
+                        ${bestDefensePairs.map((pair, index) => 
+                            `${index + 1}. ${pair.pair} (${pair.team}): ${pair.pointsAgainst} points against`
+                        ).join('<br>')}
+                    </div>
+                `;
+            }
             
             document.getElementById('results-content').innerHTML = resultsHTML;
             document.getElementById('results-section').style.display = 'block';
+            
+            document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         
         function downloadSchedule() {
@@ -706,101 +858,17 @@
             const { title, date, court1, court2, teams } = currentScheduleData;
             const scheduleHTML = generateScheduleHTML(title, date, court1, court2, teams, true);
             
-            // Create complete HTML document with landscape print optimization
             const fullHTML = `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>${title}</title>
     <style>
-        @media print {
-            @page {
-                size: landscape;
-                margin: 0.3in;
-            }
-            
-            body { 
-                margin: 0;
-                padding: 0.2in;
-                background: white;
-            }
-            
-            .schedule-container {
-                font-size: 10px !important;
-            }
-            
-            .schedule-header h1 {
-                font-size: 18px !important;
-            }
-            
-            .schedule-header h2 {
-                font-size: 12px !important;
-            }
-            
-            .teams-legend {
-                margin-bottom: 10px !important;
-                padding: 5px !important;
-            }
-            
-            .teams-legend h3 {
-                font-size: 12px !important;
-            }
-            
-            .team-item {
-                font-size: 9px !important;
-            }
-            
-            .rivalry-title {
-                font-size: 10px !important;
-                padding: 3px 6px !important;
-            }
-            
-            .game-row {
-                padding: 2px 6px !important;
-                margin-bottom: 1px !important;
-                font-size: 9px !important;
-            }
-            
-            .game-number {
-                font-size: 10px !important;
-                min-width: 45px !important;
-            }
-            
-            .matchup, .team {
-                font-size: 10px !important;
-            }
-            
-            .score-input {
-                width: 22px !important;
-                height: 18px !important;
-                font-size: 9px !important;
-                border: 1px solid #333 !important;
-            }
-            
-            .score-label {
-                font-size: 9px !important;
-            }
-            
-            .games-container {
-                gap: 12px !important;
-            }
-            
-            .rivalry-section {
-                margin-bottom: 8px !important;
-                page-break-inside: avoid;
-            }
-            
-            .rivalry-section.second-half,
-            .rivalry-section.third-section {
-                margin-top: 10px !important;
-            }
-        }
-        
         body {
             font-family: Arial, sans-serif;
             line-height: 1.2;
             margin: 15px;
-            background: white;
+            backgroun d: white;
             font-size: 12px;
         }
         
@@ -958,6 +1026,18 @@
             display: flex;
             flex-direction: column;
         }
+        
+        @media print {
+            @page {
+                size: landscape;
+                margin: 0.3in;
+            }
+            
+            body { 
+                margin: 0;
+                padding: 0.2in;
+            }
+        }
     </style>
 </head>
 <body>
@@ -965,7 +1045,6 @@
 </body>
 </html>`;
             
-            // Create and download file
             const blob = new Blob([fullHTML], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -978,13 +1057,11 @@
         }
         
         function generateScheduleHTML(title, date, court1, court2, teams, forDownload = false) {
-            // Generate all possible matchups for each team rivalry
             function generateTeamMatchups(team1, team2) {
                 const matchups = [];
                 const players1 = team1.players;
                 const players2 = team2.players;
                 
-                // All possible pair combinations
                 const pairs1 = [
                     [players1[0], players1[1]],
                     [players1[0], players1[2]],
@@ -1009,7 +1086,6 @@
                 return matchups;
             }
             
-            // Generate all rivalries
             const rivalries = [
                 { teams: [teams[0], teams[1]], court: court1, games: [1, 2, 3] },
                 { teams: [teams[2], teams[3]], court: court2, games: [4, 5, 6] },
@@ -1022,7 +1098,7 @@
             let gameNumber = 1;
             let leftColumn = '';
             let rightColumn = '';
-            gameData = []; // Reset game data
+            gameData = [];
             
             rivalries.forEach((rivalry, index) => {
                 const matchups = generateTeamMatchups(rivalry.teams[0], rivalry.teams[1]);
@@ -1034,7 +1110,6 @@
                 `;
                 
                 matchups.forEach((matchup, i) => {
-                    // Store game data for calculations
                     gameData.push(matchup);
                     
                     const scoreInputs = forDownload ? 
@@ -1064,7 +1139,6 @@
                 
                 rivalryHTML += '</div>';
                 
-                // Alternate between left and right columns
                 if (index % 2 === 0) {
                     leftColumn += rivalryHTML;
                 } else {
@@ -1073,254 +1147,6 @@
             });
             
             return `
-                <style>
-                    @media print {
-                        @page {
-                            size: landscape;
-                            margin: 0.3in;
-                        }
-                        
-                        body { 
-                            margin: 0;
-                            padding: 0.2in;
-                            background: white;
-                        }
-                        
-                        .schedule-container {
-                            font-size: 10px !important;
-                        }
-                        
-                        .schedule-header h1 {
-                            font-size: 18px !important;
-                        }
-                        
-                        .schedule-header h2 {
-                            font-size: 12px !important;
-                        }
-                        
-                        .teams-legend {
-                            margin-bottom: 10px !important;
-                            padding: 5px !important;
-                        }
-                        
-                        .teams-legend h3 {
-                            font-size: 12px !important;
-                        }
-                        
-                        .team-item {
-                            font-size: 9px !important;
-                        }
-                        
-                        .rivalry-title {
-                            font-size: 10px !important;
-                            padding: 3px 6px !important;
-                        }
-                        
-                        .game-row {
-                            padding: 2px 6px !important;
-                            margin-bottom: 1px !important;
-                            font-size: 9px !important;
-                        }
-                        
-                        .game-number {
-                            font-size: 10px !important;
-                            min-width: 45px !important;
-                        }
-                        
-                        .matchup, .team {
-                            font-size: 10px !important;
-                        }
-                        
-                        .score-input {
-                            width: 22px !important;
-                            height: 18px !important;
-                            font-size: 9px !important;
-                            border: 1px solid #333 !important;
-                        }
-                        
-                        .score-label {
-                            font-size: 9px !important;
-                        }
-                        
-                        .games-container {
-                            gap: 12px !important;
-                        }
-                        
-                        .rivalry-section {
-                            margin-bottom: 8px !important;
-                            page-break-inside: avoid;
-                        }
-                        
-                        .rivalry-section.second-half,
-                        .rivalry-section.third-section {
-                            margin-top: 10px !important;
-                        }
-                    }
-                    
-                    .schedule-container {
-                        font-family: Arial, sans-serif;
-                        line-height: 1.2;
-                        background: white;
-                        font-size: 12px;
-                    }
-                    
-                    .schedule-header {
-                        text-align: center;
-                        margin-bottom: 15px;
-                        border-bottom: 2px solid #333;
-                        padding-bottom: 8px;
-                    }
-                    
-                    .schedule-header h1 {
-                        margin: 0;
-                        font-size: 20px;
-                        color: #333;
-                    }
-                    
-                    .schedule-header h2 {
-                        margin: 3px 0 0 0;
-                        font-size: 14px;
-                        color: #666;
-                        font-weight: normal;
-                    }
-                    
-                    .teams-legend {
-                        margin-bottom: 15px;
-                        padding: 8px;
-                        background: #f5f5f5;
-                        border-radius: 3px;
-                    }
-                    
-                    .teams-legend h3 {
-                        margin: 0 0 5px 0;
-                        color: #333;
-                        font-size: 14px;
-                    }
-                    
-                    .team-list {
-                        display: grid;
-                        grid-template-columns: repeat(4, 1fr);
-                        gap: 8px;
-                    }
-                    
-                    .team-item {
-                        padding: 4px 6px;
-                        background: white;
-                        border-radius: 2px;
-                        border-left: 3px solid #333;
-                        font-size: 11px;
-                    }
-                    
-                    .team-name {
-                        font-weight: bold;
-                        margin-bottom: 2px;
-                    }
-                    
-                    .players {
-                        font-size: 11px;
-                        color: #666;
-                    }
-                    
-                    .rivalry-section {
-                        margin-bottom: 12px;
-                        page-break-inside: avoid;
-                    }
-                    
-                    .rivalry-section.second-half {
-                        margin-top: 20px;
-                    }
-                    
-                    .rivalry-section.third-section {
-                        margin-top: 20px;
-                    }
-                    
-                    .rivalry-title {
-                        background: #f0f0f0;
-                        padding: 4px 8px;
-                        margin-bottom: 5px;
-                        font-weight: bold;
-                        font-size: 12px;
-                        border-left: 3px solid #333;
-                    }
-                    
-                    .game-row {
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding: 3px 8px;
-                        margin-bottom: 2px;
-                        border: 1px solid #ddd;
-                        background: white;
-                        font-size: 11px;
-                    }
-                    
-                    .game-row:nth-child(even) {
-                        background: #f9f9f9;
-                    }
-                    
-                    .game-info {
-                        flex: 1;
-                        display: flex;
-                        align-items: center;
-                    }
-                    
-                    .game-number {
-                        font-weight: bold;
-                        margin-right: 10px;
-                        min-width: 50px;
-                        color: #333;
-                    }
-                    
-                    .matchup {
-                        font-size: 12px;
-                    }
-                    
-                    .vs {
-                        margin: 0 8px;
-                        font-weight: bold;
-                        color: #666;
-                    }
-                    
-                    .team {
-                        font-weight: 600;
-                        font-size: 12px;
-                    }
-                    
-                    .score-section {
-                        display: flex;
-                        align-items: center;
-                        min-width: 80px;
-                    }
-                    
-                    .score-input {
-                        width: 25px;
-                        height: 20px;
-                        border: 2px solid #333;
-                        margin: 0 3px;
-                        text-align: center;
-                        font-size: 11px;
-                        padding: 2px;
-                    }
-                    
-                    .score-label {
-                        font-size: 10px;
-                        color: #666;
-                        margin-right: 5px;
-                        font-weight: 500;
-                    }
-                    
-                    .games-container {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 15px;
-                    }
-                    
-                    .left-column, .right-column {
-                        display: flex;
-                        flex-direction: column;
-                    }
-                </style>
-                
                 <div class="schedule-container">
                     <div class="schedule-header">
                         <h1>${title} (${date})</h1>
