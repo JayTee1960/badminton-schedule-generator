@@ -392,36 +392,54 @@
         }
 
         @media print {
-            @page {
-                size: landscape;
-                margin: 0.3in;
-            }
-            
-            body {
-                margin: 0;
-                padding: 0.2in;
-                background: white;
-            }
-            
-            .container {
-                box-shadow: none;
-                padding: 0;
-            }
-            
-            .header {
-                display: none !important;
-            }
-            
-            .action-buttons,
-            .results-section {
-                display: none !important;
-            }
-            
-            .schedule-wrapper {
-                border: none;
-                padding: 0;
-            }
-        }
+    @page {
+        size: landscape;
+        margin: 0.3in;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0.2in;
+        background: white;
+    }
+    
+    .container {
+        box-shadow: none;
+        padding: 0;
+    }
+    
+    .header {
+        display: none !important;
+    }
+    
+    .action-buttons,
+    .results-section {
+        display: none !important;
+    }
+    
+    .schedule-wrapper {
+        border: none;
+        padding: 0;
+    }
+    
+    /* Larger fonts for printing */
+    .matchup,
+    .team {
+        font-size: 16px !important;
+    }
+    
+    .game-number {
+        font-size: 15px !important;
+    }
+    
+    .team-name {
+        font-size: 15px !important;
+    }
+    
+    .players {
+        font-size: 13px !important;
+    }
+}
     </style>
 </head>
 <body>
